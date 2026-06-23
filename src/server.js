@@ -49,7 +49,7 @@ async function serveStatic(request, response) {
     const data = await fs.readFile(filePath);
     response.writeHead(200, {
       "Content-Type": mimeTypes[path.extname(filePath)] || "application/octet-stream",
-      "Cache-Control": "public, max-age=300"
+      "Cache-Control": "no-store"
     });
     response.end(data);
   } catch {

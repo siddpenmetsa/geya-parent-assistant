@@ -8,6 +8,8 @@ const sourceList = document.querySelector("#sourceList");
 const followUps = document.querySelector("#followUps");
 const themeToggle = document.querySelector("#themeToggle");
 const printChecklist = document.querySelector("#printChecklist");
+const isWidget = Boolean(document.querySelector(".geya-widget-panel"));
+const widgetChips = document.querySelector(".widget-chips");
 
 const history = [];
 
@@ -30,6 +32,12 @@ function addTyping() {
 }
 
 function renderSources(sources) {
+  if (isWidget) {
+    if (sourcePanel) sourcePanel.hidden = true;
+    return;
+  }
+
+  if (!sourcePanel || !sourceList) return;
   sourceList.innerHTML = "";
   if (!sources.length) {
     sourcePanel.hidden = true;
@@ -54,6 +62,12 @@ function renderSources(sources) {
 }
 
 function renderFollowUps(items) {
+  if (isWidget) {
+    if (followUps) followUps.hidden = true;
+    return;
+  }
+
+  if (!followUps) return;
   followUps.innerHTML = "";
   if (!items.length) {
     followUps.hidden = true;
@@ -80,6 +94,7 @@ async function submitQuestion(rawText) {
   addMessage("user", text);
   history.push({ role: "user", text });
   messageInput.value = "";
+  if (isWidget && widgetChips) widgetChips.hidden = true;
   chatForm.querySelector("button").disabled = true;
   renderFollowUps([]);
   renderSources([]);
@@ -137,6 +152,9 @@ async function submitQuestion(rawText) {
         if (event === "done") {
           renderSources(data.sources || []);
           renderFollowUps(data.followUps || []);
+          if (isWidget) {
+            chatLog.scrollTop = Math.max(0, assistantMessage.offsetTop - chatLog.offsetTop);
+          }
         }
       }
     }
@@ -165,13 +183,13 @@ document.querySelectorAll(".prompt-chips button").forEach((button) => {
   button.addEventListener("click", () => submitQuestion(button.textContent));
 });
 
-themeToggle.addEventListener("click", () => {
+themeToggle?.addEventListener("click", () => {
   const nextTheme = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   document.documentElement.dataset.theme = nextTheme;
   localStorage.setItem("geya-theme", nextTheme);
 });
 
-printChecklist.addEventListener("click", () => {
+printChecklist?.addEventListener("click", () => {
   const sport = sportFilter.options[sportFilter.selectedIndex].text;
   const printWindow = window.open("", "_blank");
   printWindow.document.write(`

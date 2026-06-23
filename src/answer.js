@@ -146,6 +146,31 @@ function directAnswer(question, sport) {
     ].join("\n");
   }
 
+  if (mentions(question, ["equipment", "bring", "wear", "first practice", "checklist"]) && sport === "all") {
+    return [
+      "GEYA equipment information available in the official resources:",
+      "",
+      "Recreational Soccer:",
+      "- Bring a properly inflated soccer ball with the player's name on it.",
+      "- Ball size 3: Kindergarten and 1st Grade.",
+      "- Ball size 4: 2nd/3rd Grade and 4th/5th Grade.",
+      "- Ball size 5: 6th-8th Grade and Coed.",
+      "- Shin guards must be worn under socks for all practices and games.",
+      "- Cleats are recommended.",
+      "- Bring an individual water bottle.",
+      "- Earrings are not permitted during participation.",
+      "",
+      "HIGH 5 Soccer:",
+      "- Bring a water bottle.",
+      "- Wear sneakers and comfortable clothes.",
+      "- Players receive a HIGH 5 t-shirt on the first day and should wear it to every session.",
+      "- Cleats and shin guards are optional.",
+      "",
+      "Little League Baseball:",
+      "- The indexed GEYA resources describe Tee Ball as using bats and balls designated for that division, but they do not list a complete player equipment checklist."
+    ].join("\n");
+  }
+
   if (wantsSoccer(question, sport) && mentions(question, ["register", "registration", "open", "close", "deadline", "fee", "cost", "price"])) {
     return [
       "GEYA Soccer registration details:",
