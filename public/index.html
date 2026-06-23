@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17685a" />
+    <title>GEYA Parent Assistant</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="chat-panel" aria-label="GEYA Parent Assistant chatbot">
+        <header class="hero">
+          <div>
+            <p class="eyebrow">GEYA programs support</p>
+            <h1>Ask the GEYA Parent Assistant</h1>
+            <p class="intro">Find registration, division, equipment, volunteer, field, and practice information from indexed GEYA resources.</p>
+          </div>
+          <button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle dark mode">◐</button>
+        </header>
+
+        <form class="filters" aria-label="Answer filters">
+          <label>
+            Sport
+            <select id="sportFilter">
+              <option value="all">All programs</option>
+              <option value="soccer">Recreational Soccer</option>
+              <option value="high5">HIGH 5 Soccer</option>
+              <option value="baseball">Little League Baseball</option>
+              <option value="legion-baseball">Junior American Legion Baseball</option>
+            </select>
+          </label>
+          <label>
+            Age or grade
+            <select id="ageFilter">
+              <option value="all">All ages</option>
+              <option value="pre-k">Pre-K</option>
+              <option value="k-2">K-2</option>
+              <option value="3-5">Grades 3-5</option>
+              <option value="6-8">Grades 6-8</option>
+              <option value="high-school">High school</option>
+            </select>
+          </label>
+          <button id="printChecklist" type="button">Print checklist</button>
+        </form>
+
+        <div class="prompt-chips" aria-label="Example questions">
+          <button type="button">How do I register my child?</button>
+          <button type="button">What division should my child play in?</button>
+          <button type="button">What equipment is required?</button>
+          <button type="button">How do I volunteer to coach?</button>
+        </div>
+
+        <div id="chatLog" class="chat-log" aria-live="polite"></div>
+
+        <div id="sourcePanel" class="source-panel" hidden>
+          <h2>Relevant GEYA resources</h2>
+          <ul id="sourceList"></ul>
+        </div>
+
+        <div id="followUps" class="follow-ups" hidden aria-label="Suggested follow-up questions"></div>
+
+        <form id="chatForm" class="composer">
+          <label class="sr-only" for="messageInput">Ask a GEYA question</label>
+          <textarea id="messageInput" rows="1" placeholder="Ask about registration, divisions, equipment, coaching, or schedules..." required></textarea>
+          <button type="submit" aria-label="Send question">Send</button>
+        </form>
+      </section>
+    </main>
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>

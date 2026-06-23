@@ -1,0 +1,268 @@
+.demo-site {
+  background: #f7f8f4;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px max(24px, calc((100vw - 1120px) / 2));
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid var(--line);
+  backdrop-filter: blur(10px);
+}
+
+.site-brand {
+  display: grid;
+  gap: 2px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.site-brand span {
+  color: var(--brand);
+  font-weight: 900;
+  font-size: 1.4rem;
+}
+
+.site-brand strong {
+  font-size: 0.82rem;
+}
+
+.site-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.site-header nav a {
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.site-hero,
+.site-section {
+  width: min(1120px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+.site-hero {
+  min-height: 520px;
+  display: grid;
+  align-items: center;
+  padding: 48px 0;
+}
+
+.site-hero h1 {
+  max-width: 760px;
+}
+
+.site-hero p {
+  max-width: 680px;
+  color: var(--muted);
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.site-cta {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.site-section {
+  padding: 54px 0;
+  border-top: 1px solid var(--line);
+}
+
+.site-section h2 {
+  margin: 0 0 14px;
+  font-size: 2rem;
+}
+
+.site-section p {
+  max-width: 760px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.site-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.site-grid article {
+  padding: 18px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+}
+
+.site-grid h3 {
+  margin: 0 0 8px;
+}
+
+.geya-widget {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  z-index: 100;
+  color: var(--text);
+}
+
+.geya-widget-launcher {
+  min-height: 52px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 8px;
+  background: var(--brand);
+  color: #fff;
+  box-shadow: var(--shadow);
+  font-weight: 900;
+}
+
+.geya-widget-panel {
+  width: min(420px, calc(100vw - 28px));
+  height: min(680px, calc(100vh - 28px));
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto auto auto;
+  gap: 10px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.geya-widget-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--brand);
+  color: #fff;
+}
+
+.geya-widget-header div {
+  display: grid;
+  gap: 2px;
+}
+
+.geya-widget-header span {
+  font-size: 0.82rem;
+  opacity: 0.86;
+}
+
+.geya-widget-header button {
+  width: 34px;
+  height: 34px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 8px;
+  background: transparent;
+  color: #fff;
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+.widget-filters,
+.widget-chips,
+.widget-follow-ups {
+  padding: 0 14px;
+}
+
+.widget-filters {
+  padding-top: 12px;
+}
+
+.widget-filters label {
+  min-width: calc(50% - 5px);
+}
+
+.widget-chips,
+.widget-follow-ups {
+  gap: 8px;
+}
+
+.widget-chips button,
+.widget-follow-ups button {
+  min-height: 36px;
+  font-size: 0.85rem;
+}
+
+.widget-log {
+  min-height: 0;
+  padding: 4px 14px 12px;
+}
+
+.widget-log .message {
+  width: min(100%, 360px);
+  font-size: 0.92rem;
+}
+
+.widget-sources {
+  max-height: 96px;
+  overflow: auto;
+  margin: 0 14px;
+  padding: 10px 12px;
+}
+
+.widget-sources h2 {
+  font-size: 0.9rem;
+}
+
+.widget-composer {
+  grid-template-columns: 1fr auto;
+  gap: 8px;
+  padding: 12px 14px 14px;
+}
+
+.widget-composer textarea {
+  max-height: 88px;
+}
+
+.widget-composer button {
+  padding: 0 14px;
+}
+
+@media (max-width: 720px) {
+  .site-header {
+    align-items: flex-start;
+    padding: 14px 16px;
+  }
+
+  .site-header nav {
+    display: none;
+  }
+
+  .site-hero,
+  .site-section {
+    width: calc(100% - 32px);
+  }
+
+  .site-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .geya-widget {
+    right: 14px;
+    bottom: 14px;
+  }
+
+  .geya-widget-panel {
+    width: calc(100vw - 28px);
+    height: min(640px, calc(100vh - 28px));
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "name": "geya-parent-assistant",
+  "version": "1.0.0",
+  "description": "Production-ready RAG chatbot for GEYA parent, guardian, coach, and volunteer support.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "ingest": "node src/ingest.js",
+    "dev": "node src/server.js"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

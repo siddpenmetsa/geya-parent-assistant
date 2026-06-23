@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#17685a" />
+    <title>GEYA Website Assistant Preview</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/widget.css" />
+  </head>
+  <body class="demo-site">
+    <header class="site-header">
+      <a class="site-brand" href="/">
+        <span>GEYA</span>
+        <strong>Glenmoore Eagle Youth Association</strong>
+      </a>
+      <nav aria-label="Demo navigation">
+        <a href="#programs">Programs</a>
+        <a href="#registration">Registration</a>
+        <a href="#fields">Fields</a>
+        <a href="#volunteer">Volunteer</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="site-hero">
+        <div>
+          <p class="eyebrow">Prototype placement preview</p>
+          <h1>Family answers without leaving the page</h1>
+          <p>
+            This preview shows how the GEYA Parent Assistant could sit on the official website as a minimized helper.
+            Parents can ask a question from any program page and keep reading while the assistant answers.
+          </p>
+          <a class="site-cta" href="#registration">View registration details</a>
+        </div>
+      </section>
+
+      <section id="programs" class="site-section">
+        <h2>Programs</h2>
+        <div class="site-grid">
+          <article>
+            <h3>Recreational Soccer</h3>
+            <p>Spring, fall, and winter indoor futsal for Kindergarten through High School divisions.</p>
+          </article>
+          <article>
+            <h3>HIGH 5 Soccer</h3>
+            <p>A free soccer program for players with special needs, paired with teen or adult buddies.</p>
+          </article>
+          <article>
+            <h3>Little League Baseball</h3>
+            <p>Baseball divisions from Tee Ball through Senior, with parent volunteer opportunities.</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="registration" class="site-section">
+        <h2>Registration</h2>
+        <p>
+          The assistant can answer questions about soccer registration dates, fees, TeamSnap, divisions, equipment,
+          fields, and volunteer requirements using the indexed GEYA resources.
+        </p>
+      </section>
+
+      <section id="fields" class="site-section">
+        <h2>Fields</h2>
+        <p>
+          A parent looking at this section could ask the minimized assistant which field their child uses by grade level.
+        </p>
+      </section>
+    </main>
+
+    <div class="geya-widget" id="geyaWidget">
+      <button class="geya-widget-launcher" id="widgetLauncher" type="button" aria-expanded="false" aria-controls="widgetPanel">
+        <span>Ask GEYA</span>
+      </button>
+
+      <section class="geya-widget-panel" id="widgetPanel" aria-label="GEYA Parent Assistant widget" hidden>
+        <header class="geya-widget-header">
+          <div>
+            <strong>GEYA Parent Assistant</strong>
+            <span>Answers from GEYA resources</span>
+          </div>
+          <button id="widgetClose" type="button" aria-label="Minimize assistant">×</button>
+        </header>
+
+        <form class="filters widget-filters" aria-label="Widget answer filters">
+          <label>
+            Sport
+            <select id="sportFilter">
+              <option value="all">All sports</option>
+              <option value="baseball">Baseball</option>
+              <option value="soccer">Soccer</option>
+              <option value="high5">HIGH 5</option>
+              <option value="legion-baseball">Legion Baseball</option>
+            </select>
+          </label>
+          <label>
+            Age or grade
+            <select id="ageFilter">
+              <option value="all">All ages</option>
+              <option value="k-2">K-2</option>
+              <option value="3-5">Grades 3-5</option>
+              <option value="6-8">Grades 6-8</option>
+              <option value="high-school">High school</option>
+            </select>
+          </label>
+        </form>
+
+        <div class="prompt-chips widget-chips" aria-label="Example questions">
+          <button type="button">How do I register my child?</button>
+          <button type="button">What division should my child play in?</button>
+          <button type="button">What equipment is required?</button>
+        </div>
+
+        <div id="chatLog" class="chat-log widget-log" aria-live="polite"></div>
+
+        <div id="sourcePanel" class="source-panel widget-sources" hidden>
+          <h2>Sources</h2>
+          <ul id="sourceList"></ul>
+        </div>
+
+        <div id="followUps" class="follow-ups widget-follow-ups" hidden aria-label="Suggested follow-up questions"></div>
+
+        <form id="chatForm" class="composer widget-composer">
+          <label class="sr-only" for="messageInput">Ask a GEYA question</label>
+          <textarea id="messageInput" rows="1" placeholder="Ask a GEYA question..." required></textarea>
+          <button type="submit" aria-label="Send question">Send</button>
+        </form>
+      </section>
+    </div>
+
+    <script src="/app.js" type="module"></script>
+    <script src="/widget.js" type="module"></script>
+  </body>
+</html>
