@@ -24,6 +24,12 @@ function needsClarification(question, sport, ageGroup) {
   return match.question;
 }
 
+// Minimum number of overlapping meaningful keywords a KB sentence must have
+// with the question before it's considered a candidate answer. Raising this
+// from 1 to 2 stops single-word coincidental matches (e.g. "play") from
+// pulling in unrelated sentences from the knowledge base.
+const MIN_SENTENCE_KEYWORD_OVERLAP = 2;
+
 function pickRelevantSentences(question, chunks) {
   const words = new Set(question.toLowerCase().split(/\W+/).filter((word) => word.length > 3));
   const bestScore = chunks[0]?.score || 0;
@@ -37,7 +43,7 @@ function pickRelevantSentences(question, chunks) {
         .toLowerCase()
         .split(/\W+/)
         .filter((word) => words.has(word)).length;
-      if (score > 0) sentences.push({ sentence, score, source: chunk });
+      if (score >= MIN_SENTENCE_KEYWORD_OVERLAP) sentences.push({ sentence, score, source: chunk });
     }
   }
 
@@ -83,6 +89,23 @@ function mentions(question, terms) {
   return terms.some((term) => lower.includes(term));
 }
 
+// Pattern-based matching (instead of exact-phrase-only matching) so that
+// natural variants like "Where should my son play?", "Which league is
+// right for my daughter?", and "What team should my kid join?" are all
+// recognized as the same underlying intent: division/placement guidance.
+function asksAboutDivisionPlacement(question) {
+  const lower = question.toLowerCase();
+  const patterns = [
+    /\b(what|which)\s+(division|league|team|program)\b/,
+    /where should .* (play|go)/,
+    /(should|could) my (child|kid|son|daughter) play/,
+    /(child|kid|son|daughter).*\b(division|league|team)\b/,
+    /right for my (son|daughter|kid|child)/,
+    /what (team|division|league) should/
+  ];
+  return patterns.some((re) => re.test(lower));
+}
+
 function asksAboutDocuments(question) {
   return mentions(question, [
     "document",
@@ -111,6 +134,42 @@ function wantsBaseball(question, sport) {
 }
 
 function directAnswer(question, sport) {
+  if (asksAboutDivisionPlacement(question)) {
+    const soccerKnown = wantsSoccer(question, sport);
+    const baseballKnown = wantsBaseball(question, sport);
+
+    // Sport not specified yet — keep it short, conversational, and ask a
+    // clarifying question instead of dumping every division across both
+    // sports. This matches the "helpful coordinator" tone rather than a
+    // document search engine.
+    if (!soccerKnown && !baseballKnown) {
+      return "Choosing the right GEYA division really comes down to your child's age, grade, and how much experience they have with the sport. Once I know the sport, age, and grade, I can point you to the right fit — what sport are they interested in, and what grade are they in?";
+    }
+
+    if (soccerKnown) {
+      return [
+        "For soccer, here's generally how families choose:",
+        "- New to soccer and just learning the basics? Kindergarten-1st Grade is a great starting point.",
+        "- Building passing, teamwork, and confidence? 2nd/3rd Grade or 4th/5th Grade tends to fit.",
+        "- Looking for more structured, competitive play? 6th-8th Grade is usually the right level.",
+        "- High schoolers play in the Coed 9th-12th Grade division.",
+        "",
+        "What grade is your child in? I can narrow it down from there."
+      ].join("\n");
+    }
+
+    // baseballKnown
+    return [
+      "For baseball, placement is mostly age-based:",
+      "- Just starting out, ages 4-7? That's Tee Ball.",
+      "- Building skills around ages 5-8 (with a year of Tee Ball under their belt if they're 5-6)? Coach/Machine Pitch.",
+      "- Ages 8-10 typically play Minor Player Pitch, and ages 9-12 play Major.",
+      "- Older players move into Intermediate 50/70 (11-13), Junior (12-14), or Senior (13-16).",
+      "",
+      "How old is your child? I can tell you exactly which division that lands them in."
+    ].join("\n");
+  }
+
   if (asksAboutDocuments(question)) {
     if (mentions(question, ["volunteer", "coach", "coaching", "background", "clearance"])) {
       return [
@@ -300,9 +359,16 @@ export function buildExtractiveAnswer({ question, chunks, sport, ageGroup }) {
   if (clarify && chunks.length < 2) return { answer: clarify, confidence: "clarify" };
 
   const sentences = pickRelevantSentences(question, chunks);
-  if (!sentences.length) return { answer: fallbackMessage, confidence: "none" };
+
+  // When nothing clears the relevance bar, prefer a clarifying question
+  // (if one applies to this topic) over the generic fallback — this reads
+  // like a coordinator asking for more detail rather than a search engine
+  // coming up empty.
+  if (!sentences.length) {
+    return { answer: clarify || fallbackMessage, confidence: "none" };
+  }
   if (asksForSensitiveFact(question) && !hasConcreteSensitiveFact(sentences)) {
-    return { answer: fallbackMessage, confidence: "none" };
+    return { answer: clarify || fallbackMessage, confidence: "none" };
   }
 
   const bullets = sentences.map((sentence) => `- ${sentence}`).join("\n");
@@ -312,13 +378,42 @@ export function buildExtractiveAnswer({ question, chunks, sport, ageGroup }) {
   };
 }
 
-export function buildFollowUps(question) {
+export function buildFollowUps(question, answer) {
+  // If the bot failed to find an answer, or asked to clarify, hide follow-ups completely.
+  if (answer === fallbackMessage || !answer) {
+    return [];
+  }
+
   const lower = question.toLowerCase();
-  if (lower.includes("register")) {
-    return ["What documents do I need for registration?", "When does registration close?", "How do I volunteer to coach?"];
+
+  // These questions are guaranteed to hit your hardcoded directAnswer rules
+  if (lower.includes("register") || lower.includes("fee") || lower.includes("cost")) {
+    return [
+      "What background clearances do volunteers need?",
+      "How do I volunteer to help?",
+      "How can I contact GEYA?"
+    ];
   }
-  if (lower.includes("equipment") || lower.includes("bring")) {
-    return ["Can you make a printable checklist?", "Where are games played?", "What should my child bring to practice?"];
+
+  if (lower.includes("equipment") || lower.includes("bring") || lower.includes("practice")) {
+    return [
+      "Where are the soccer field locations?",
+      "What equipment do I need to bring?",
+      "What division should my child play in?"
+    ];
   }
-  return ["How do I register my child?", "What division should my child play in?", "How can I contact GEYA?"];
+
+  if (lower.includes("division") || lower.includes("league") || lower.includes("team") || lower.includes("play in")) {
+    return [
+      "What's my child's age or grade?",
+      "What equipment does my child need?",
+      "When does registration open?"
+    ];
+  }
+
+  return [
+    "How do I register?",
+    "What equipment do I need to bring?",
+    "What division should my child play in?"
+  ];
 }
